@@ -3,6 +3,8 @@
 setup:
 	# Frontend
 	cd front && yarn install
+	cp .env.example .env
+	cd ../
 	# Backend
 	cp .env.example .env
 	docker network create pripla
@@ -18,6 +20,15 @@ up:
 
 down:
 	docker-compose down
+
+prod-up:
+	docker-compose up -d
+	cd front && yarn build
+	cd front && nohup yarn start > /dev/null 2>&1 &
+
+prod-down:
+	docker-compose down
+	kill `lsof -i :3001 | awk '$$1 == "node" { print $$2 }'`
 
 ps:
 	docker-compose ps
