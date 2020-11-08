@@ -35,7 +35,12 @@
             <span>デートの流れ</span>
           </li>
         </ul>
-        <div>{{ plan.flow_chart }}</div>
+        <div class="flow-chart">
+          <Renderer
+            :tree="parseTreeModel(plan.flow_chart)"
+            :input-mode="false"
+          />
+        </div>
       </div>
     </div>
     <Loading v-if="loading" />
@@ -43,11 +48,14 @@
 </template>
 
 <script>
+import TreeModel from 'tree-model'
 import Loading from '~/components/loading/index.vue'
+import Renderer from '~/components/flow-chart/renderer.vue'
 
 export default {
   components: {
     Loading,
+    Renderer,
   },
   data() {
     return {
@@ -79,6 +87,10 @@ export default {
           this.$router.push('/404')
         })
     },
+    parseTreeModel(tree) {
+      const treeModel = new TreeModel()
+      return treeModel.parse(tree)
+    },
   },
 }
 </script>
@@ -86,9 +98,10 @@ export default {
 <style lang="scss" scoped>
 .header {
   position: relative;
-  height: 40px;
   display: flex;
   align-items: center;
+  padding: 15px 0 0;
+  margin: 0 0 20px;
 
   &-title {
     font-size: 14px;
@@ -100,6 +113,7 @@ export default {
     position: absolute;
     width: 20px;
     height: 20px;
+    cursor: pointer;
   }
 }
 
@@ -110,11 +124,13 @@ export default {
     font-size: 18px;
     text-align: center;
     font-weight: normal;
+    margin: 0 0 20px;
   }
 
   &-list {
     list-style-type: none;
     padding: 0;
+    margin: 0;
   }
 
   &-item {
@@ -140,6 +156,15 @@ export default {
     &__margin {
       margin-right: 20px;
     }
+  }
+}
+
+.flow {
+  &-chart {
+    overflow: scroll;
+    height: calc(100vh - 250px);
+    min-height: 200px;
+    margin: 0 15px 15px;
   }
 }
 </style>
