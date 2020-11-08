@@ -5,17 +5,13 @@
       <div class="feature-wrapper">
         <h2 class="feature-title">臨機応変なデートプランをシェア</h2>
         <p class="feature-description">
-          ほげほげほげほげほげほげほげほげほげほげ
-          ほげほげほげほげほげほげほげほげほげほげ
-          ほげほげほげほげほげほげほげほげほげほげ
-          ほげほげほげほげほげほげほげほげほげほげ
-          ほげほげほげほげほげほげほげほげほげほげ
-          ほげほげほげほげほげほげほげほげほげほげ
-          ほげほげほげほげほげほげほげほげほげほげ
+          どこか一箇所のスポットに行くことだけがデートではありません。
+          目的地の他にも食事やショッピングといった行き先の設定、雨が降ったり混雑していたら...といったイレギュラーにもスマートに対応したいもの。
+          Priplaではそんな幾通りもある分岐をカバーしたデートプランが共有されています。
         </p>
       </div>
       <div class="start-btn">
-        <Button @click.native="$router.push(`/tl`)">さあ、はじめよう</Button>
+        <Button @click.native="$router.push(`/tl`)">デートプランを見る</Button>
       </div>
     </div>
   </div>
@@ -47,6 +43,7 @@ export default {
   &-description {
     margin: 0 0 30px 0;
     width: 100%;
+    line-height: 1.8;
     font-size: 14px;
   }
 }
