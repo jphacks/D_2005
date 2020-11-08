@@ -11,12 +11,12 @@
     /> -->
     <Renderer
       :tree="tree"
+      @setValue="setValue"
       @addProcessNode="addProcessNode"
       @addChildProcessNode="addChildProcessNode"
       @addIfNode="addIfNode"
       @addChildIfNode="addChildIfNode"
       @removeNode="removeNode"
-      @setValue="setValue"
     />
   </div>
 </template>
@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     initTree() {
-      const nodes = {
+      this.tree = this.treeModel.parse({
         id: 1,
         name: 'root',
         value: '',
@@ -60,8 +60,7 @@ export default {
           },
           { id: 3, name: '解散', value: '', type: this.treeTypes.end },
         ],
-      }
-      this.tree = this.treeModel.parse(nodes)
+      })
       this.latestId = 3
     },
     setValue(args) {
@@ -94,6 +93,8 @@ export default {
       )
       const childNode = this.makeParsedNode(type, name)
       baseNode.addChild(childNode)
+      const endNode = this.makeParsedNode(this.treeTypes.end, '解散')
+      baseNode.addChild(endNode)
     },
     makeParsedNode(type, name) {
       return this.treeModel.parse({
@@ -104,29 +105,29 @@ export default {
       })
     },
     removeNode(selectedNode) {
-      selectedNode.drop()
+      if (
+        selectedNode.parent.getIndex() === 2 &&
+        selectedNode.parent.children[1].model.type === this.treeTypes.end
+      )
+        selectedNode.parent.children[1].drop()
+      selectedNode.drop(selectedNode.parent.children[1])
     },
-    makeShapedTree(nodes) {
-      const shapedTree = []
-      for (const node of nodes) {
-        const obj = {
-          id: node.id,
-          name: node.name,
-          value: node.value,
-          type: node.type,
-          children: [],
-        }
-        if (
-          Object.prototype.hasOwnProperty.call(node, 'children') &&
-          node.children.length > 0
-        )
-          obj.children = this.makeShapedTree(node.children)
-        shapedTree.push(obj)
+    makeShapedTree(node) {
+      const shapedTree = {
+        id: node.model.id,
+        name: node.model.name,
+        value: node.model.value,
+        type: node.model.type,
+        children: [],
+      }
+      for (const child of node.children) {
+        const tmp = this.makeShapedTree(child)
+        shapedTree.children.push(tmp)
       }
       return shapedTree
     },
     getShapedTree() {
-      const shapedTree = this.makeShapedTree(this.tree.model.children)
+      const shapedTree = this.makeShapedTree(this.tree)
       return shapedTree
     },
   },
